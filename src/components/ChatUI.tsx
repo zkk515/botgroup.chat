@@ -155,6 +155,7 @@ const ChatUI = () => {
     .sort((a, b) => {
       return group.members.indexOf(a.id) - group.members.indexOf(b.id);
     });
+  const allNames = groupAiCharacters.map(character => character.name);
   const [users, setUsers] = useState([
     { id: 1, name: "我" },
     ...groupAiCharacters
@@ -315,8 +316,8 @@ const ChatUI = () => {
                 const data = JSON.parse(line.slice(6));
                 if (data.content) {
                   completeResponse += data.content;
-                  //正则去掉前面的 aiMessage.sender.name：
-                  completeResponse = completeResponse.replace(new RegExp(`^${aiMessage.sender.name}：`), '');
+                  //正则去掉前面的任何AI名称：格式
+                  completeResponse = completeResponse.replace(new RegExp(`^(${allNames.join('|')})：`, 'i'), '');
                   setMessages(prev => {
                     const newMessages = [...prev];
                     const aiMessageIndex = newMessages.findIndex(msg => msg.id === aiMessage.id);
