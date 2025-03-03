@@ -315,6 +315,8 @@ const ChatUI = () => {
                 const data = JSON.parse(line.slice(6));
                 if (data.content) {
                   completeResponse += data.content;
+                  //正则去掉前面的 aiMessage.sender.name：
+                  completeResponse = completeResponse.replace(new RegExp(`^${aiMessage.sender.name}：`), '');
                   setMessages(prev => {
                     const newMessages = [...prev];
                     const aiMessageIndex = newMessages.findIndex(msg => msg.id === aiMessage.id);
