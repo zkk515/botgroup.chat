@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 import { 
   Tooltip, 
   TooltipContent, 
@@ -21,7 +22,7 @@ import rehypeKatex from 'rehype-katex'
 import { SharePoster } from '@/components/SharePoster';
 import { MembersManagement } from '@/components/MembersManagement';
 import Sidebar from './Sidebar';
-
+import { AdBanner } from './AdSection';
 // 使用本地头像数据，避免外部依赖
 const getAvatarData = (name: string) => {
   const colors = ['#1abc9c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22'];
@@ -157,6 +158,7 @@ const ChatUI = () => {
   const [messages, setMessages] = useState([
 
   ]);
+  const [showAd, setShowAd] = useState(true);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [pendingContent, setPendingContent] = useState("");
@@ -444,9 +446,14 @@ const ChatUI = () => {
                   
                   <h1 className="font-medium text-base -ml-1">{group.name}({users.length})</h1>
                 </div>
+
                 
                 {/* 右侧头像组和按钮 */}
                 <div className="flex items-center">
+                {/* 广告位 手机端不展示*/}
+                 <div className="hidden md:block">
+                   <AdBanner show={showAd} closeAd={() => setShowAd(false)} />
+                 </div>
                   <div className="flex -space-x-2 ">
                     {users.slice(0, 4).map((user) => {
                       const avatarData = getAvatarData(user.name);
