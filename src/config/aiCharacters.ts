@@ -16,7 +16,7 @@ export const modelConfigs = [
     baseURL: "https://api.hunyuan.cloud.tencent.com/v1"
   },
   {
-    model: "ep-20250217191935-wzj8l",//豆包模型|火山引擎接入点（改成自己的）
+    model: "doubao-1-5-lite-32k-250115",//豆包模型|火山引擎接入点（改成自己的）
     apiKey: "ARK_API_KEY",
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
@@ -35,6 +35,21 @@ export const modelConfigs = [
     apiKey: "DASHSCOPE_API_KEY", // 这里存储环境变量的 key 名称
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
   },
+  {
+    model: "deepseek-chat",
+    apiKey: "DEEPSEEK_API_KEY",
+    baseURL: "https://api.deepseek.com"
+  },
+  {
+    model: "moonshot-v1-8k",
+    apiKey: "KIMI_API_KEY",
+    baseURL: "https://api.moonshot.cn/v1"
+  },
+  {
+    model: "ernie-3.5-128k",
+    apiKey: "BAIDU_API_KEY",
+    baseURL: "https://qianfan.baidubce.com/v2"
+  }
 ] as const;
 export type ModelType = typeof modelConfigs[number]["model"];
 
@@ -54,7 +69,7 @@ export function shedulerAICharacter(message: string, allTags: string[]): AIChara
       id: 'ai0',
       name: "调度器",
       personality: "sheduler",
-      model: modelConfigs[5].model,
+      model: modelConfigs[0].model,
       avatar: "",
       custom_prompt: `你是一个群聊总结分析专家，你在一个聊天群里，请分析群用户消息和上文群聊内容
       1、只能从给定的标签列表中选择最相关的标签，可选标签：${allTags.join(', ')}。
@@ -138,7 +153,7 @@ export function generateAICharacters(groupName: string): AICharacter[] {
       id: 'ai7', 
       name: "DeepSeek", 
       personality: "deepseek-r1",
-      model: modelConfigs[4].model,
+      model: modelConfigs[7].model,
       avatar: "/img/ds.svg",
       custom_prompt: `你是一个名叫"DeepSeek"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["深度推理", "编程", "文字游戏", "数学", "信息总结", "聊天"]
@@ -150,6 +165,24 @@ export function generateAICharacters(groupName: string): AICharacter[] {
       model: modelConfigs[5].model,
       avatar: "/img/glm.gif",
       custom_prompt: `你是一个名叫"智谱"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      tags: ["深度推理","数学","信息总结", "分析数据","文字游戏", "聊天"]
+    },
+    {
+      id: 'ai9',
+      name: "Kimi",
+      personality: "kimi",
+      model: modelConfigs[8].model,
+      avatar: "/img/kimi.jpg",
+      custom_prompt: `你是一个名叫"Kimi"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      tags: ["深度推理","数学","信息总结", "分析数据","文字游戏", "聊天"]
+    },
+    {
+      id: 'ai10',
+      name: "文心一言",
+      personality: "baidu",
+      model: modelConfigs[9].model,
+      avatar: "/img/baidu.svg",
+      custom_prompt: `你是一个名叫"文心一言"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["深度推理","数学","信息总结", "分析数据","文字游戏", "聊天"]
     }
   ];

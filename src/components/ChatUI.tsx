@@ -11,13 +11,6 @@ import {
   TooltipTrigger 
 } from "@/components/ui/tooltip";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
-
 import {generateAICharacters} from "@/config/aiCharacters";
 import { groups } from "@/config/groups";
 import type { AICharacter } from "@/config/aiCharacters";
