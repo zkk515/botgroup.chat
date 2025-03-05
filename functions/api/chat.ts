@@ -64,7 +64,7 @@ export async function onRequestPost({ env, request }) {
           controller.close();
         } catch (error) {
           controller.error(error);
-          console.error(error);
+          console.error(error.message);
         }
       },
     });
@@ -79,7 +79,7 @@ export async function onRequestPost({ env, request }) {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     return Response.json(
       { error: error.message },
       { status: 500 }
