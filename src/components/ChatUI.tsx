@@ -283,10 +283,24 @@ const ChatUI = () => {
 
         let buffer = '';
         let completeResponse = ''; // 用于跟踪完整的响应
-
+        // 添加超时控制
+        const timeout = 5000; // 5秒超时
         while (true) {
-          const { done, value } = await reader.read();
-          
+          //console.log("读取中")
+          const startTime = Date.now();
+          const { done, value } = await Promise.race([
+            reader.read(),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('响应超时')), timeout - (Date.now() - startTime))
+            )
+          ]);
+
+          if (Date.now() - startTime > timeout) {
+            reader.cancel();
+
+            throw new Error('响应超时');
+          }
+
           if (done) {
             //如果completeResponse为空，
             if (completeResponse.trim() === "") {
@@ -353,9 +367,14 @@ const ChatUI = () => {
 
       } catch (error) {
         console.error("发送消息失败:", error);
+        messageHistory.push({
+          role: 'user',
+          content: aiMessage.sender.name + "（发生错误: " + error.message + "）下一位回答。",
+          name: aiMessage.sender.name
+        });
         setMessages(prev => prev.map(msg => 
           msg.id === aiMessage.id 
-            ? { ...msg, content: "错误: " + error.message, isError: true }
+            ? { ...msg, content: "（发生错误: " + error.message + "）下一位回答。", isError: true }
             : msg
         ));
       }

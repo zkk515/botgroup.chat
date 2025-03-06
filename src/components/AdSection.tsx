@@ -156,12 +156,12 @@ const AdBanner: React.FC<AdBannerProps> = ({ show, closeAd }) => {
                 </Popover>
                 <button 
                   onClick={() => {
-                    window.open('https://app.adjust.com/1mh0qgab?fallback=https%3A%2F%2Fmonica.cn%2Fapp-download&redirect_macos=https%3A%2F%2Fmonica.cn%2Fapp-download', '_blank');
+                    window.open('https://monica.cn/home/chat/Monica/monica', '_blank');
                   }} 
                   className="p-1 bg-white rounded-full text-xs font-medium text-blue-500 font-bold hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-1"
                 >
-                  <img src="https://files.monica.cn/assets/botgroup/mobile-banner-mobile.png" className="w-4 h-4" alt="Mobile" />
-                  下载APP
+                  <img src="https://files.monica.cn/assets/botgroup/computer.png" className="w-4 h-4" alt="Computer" />
+                  在网页中对话
                   <img src="https://files.monica.cn/assets/botgroup/arrow-up.png" className="w-4 h-4" alt="Arrow" />
                 </button>
               </div>

@@ -12,7 +12,7 @@ export const groups: Group[] = [
     id: 'group1',
     name: '🔥硅碳生命体交流群',
     description: '',
-    members: [ 'ai8', 'ai4', 'ai5', 'ai6', 'ai9', 'ai10'],
+    members: [ 'ai8', 'ai4', 'ai5', 'ai6', 'ai7', 'ai9', 'ai10'],
     isGroupDiscussionMode: false
   },
   {

@@ -38,7 +38,7 @@ export const modelConfigs = [
   {
     model: "deepseek-chat",
     apiKey: "DEEPSEEK_API_KEY",
-    baseURL: "https://api.deepseek.com"
+    baseURL: "https://api.deepseek.com/v1"
   },
   {
     model: "moonshot-v1-8k",
