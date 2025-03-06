@@ -22,7 +22,7 @@ import rehypeKatex from 'rehype-katex'
 import { SharePoster } from '@/components/SharePoster';
 import { MembersManagement } from '@/components/MembersManagement';
 import Sidebar from './Sidebar';
-import { AdBanner } from './AdSection';
+import { AdBanner, AdBannerMobile } from './AdSection';
 // 使用本地头像数据，避免外部依赖
 const getAvatarData = (name: string) => {
   const colors = ['#1abc9c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22'];
@@ -193,6 +193,12 @@ const ChatUI = () => {
         : [...prev, userId]
     );
   };
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setShowAd(false);
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     //判断是否Loding
@@ -493,7 +499,11 @@ const ChatUI = () => {
 
             {/* Main Chat Area */}
             <div className="flex-1 overflow-hidden bg-gray-100">
-              <ScrollArea className="h-full px-2 py-1" ref={chatAreaRef}>
+
+              <ScrollArea className={`h-full ${!showAd ? 'px-2 py-1' : ''} md:px-2 md:py-1`} ref={chatAreaRef}>
+                <div className="md:hidden">
+                  <AdBannerMobile show={showAd} closeAd={() => setShowAd(false)} />
+                </div>
                 <div className="space-y-4">
                   {messages.map((message) => (
                     <div key={message.id} 
