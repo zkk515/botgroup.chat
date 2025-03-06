@@ -150,6 +150,7 @@ const ChatUI = () => {
       return group.members.indexOf(a.id) - group.members.indexOf(b.id);
     });
   const allNames = groupAiCharacters.map(character => character.name);
+  allNames.push('user');
   const [users, setUsers] = useState([
     { id: 1, name: "我" },
     ...groupAiCharacters
