@@ -369,12 +369,12 @@ const ChatUI = () => {
         console.error("发送消息失败:", error);
         messageHistory.push({
           role: 'user',
-          content: aiMessage.sender.name + "我遇到错误: " + error.message + "，下一位回答。",
+          content: aiMessage.sender.name + "我有点废物(错误：" + error.message + ")，你们接着聊，不用管我。",
           name: aiMessage.sender.name
         });
         setMessages(prev => prev.map(msg => 
           msg.id === aiMessage.id 
-            ? { ...msg, content: "我遇到错误: " + error.message + "，下一位回答。", isError: true }
+            ? { ...msg, content: "我有点废物(错误：" + error.message + ")，你们接着聊，不用管我。", isError: true }
             : msg
         ));
       }

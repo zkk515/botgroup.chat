@@ -21,8 +21,8 @@ export const modelConfigs = [
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
   {
-    model: "ep-20250227191640-4qkq6",//deepseek-r火山引擎接入点（改成自己的）
-    apiKey: "ARK_API_KEY",
+    model: "ep-20250306223646-szzkw",//deepseekv火山引擎接入点（改成自己的）
+    apiKey: "ARK_API_KEY1",
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
   {
@@ -152,8 +152,8 @@ export function generateAICharacters(groupName: string): AICharacter[] {
     { 
       id: 'ai7', 
       name: "DeepSeek", 
-      personality: "deepseek-r1",
-      model: modelConfigs[7].model,
+      personality: "deepseek-V3",
+      model: modelConfigs[4].model,
       avatar: "/img/ds.svg",
       custom_prompt: `你是一个名叫"DeepSeek"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["深度推理", "编程", "文字游戏", "数学", "信息总结", "聊天"]
