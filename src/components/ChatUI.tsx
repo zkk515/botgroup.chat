@@ -289,7 +289,7 @@ const ChatUI = () => {
         while (true) {
           //console.log("读取中")
           const startTime = Date.now();
-          const { done, value } = await Promise.race([
+          let { done, value } = await Promise.race([
             reader.read(),
             new Promise((_, reject) => 
               setTimeout(() => reject(new Error('响应超时')), timeout - (Date.now() - startTime))
@@ -298,8 +298,11 @@ const ChatUI = () => {
 
           if (Date.now() - startTime > timeout) {
             reader.cancel();
-
-            throw new Error('响应超时');
+            console.log("读取超时")
+            if (completeResponse.trim() === "") {
+              throw new Error('响应超时');
+            }
+            done = true;
           }
 
           if (done) {
