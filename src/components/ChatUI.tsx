@@ -284,7 +284,7 @@ const ChatUI = () => {
         let buffer = '';
         let completeResponse = ''; // 用于跟踪完整的响应
         // 添加超时控制
-        const timeout = 8000; // 5秒超时
+        const timeout = 10000; // 10秒超时
         while (true) {
           //console.log("读取中")
           const startTime = Date.now();
