@@ -6,9 +6,9 @@ export const modelConfigs = [
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
   },
   {
-    model: "deepseek-v3",
-    apiKey: "DASHSCOPE_API_KEY",
-    baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    model: "deepseek-v3-241226",
+    apiKey: "ARK_API_KEY",
+    baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
   {
     model: "hunyuan-standard",
@@ -153,7 +153,7 @@ export function generateAICharacters(groupName: string): AICharacter[] {
       id: 'ai7', 
       name: "DeepSeek", 
       personality: "deepseek-V3",
-      model: modelConfigs[4].model,
+      model: modelConfigs[1].model,
       avatar: "/img/ds.svg",
       custom_prompt: `你是一个名叫"DeepSeek"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["深度推理", "编程", "文字游戏", "数学", "信息总结", "聊天"]
