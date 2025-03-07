@@ -308,7 +308,7 @@ const ChatUI = () => {
           if (done) {
             //如果completeResponse为空，
             if (completeResponse.trim() === "") {
-            completeResponse = "这个问题难倒我了，下一位。";
+            completeResponse = "对不起，我还不够智能，服务又断开了。";
             setMessages(prev => {
               const newMessages = [...prev];
               const aiMessageIndex = newMessages.findIndex(msg => msg.id === aiMessage.id);
@@ -373,12 +373,12 @@ const ChatUI = () => {
         console.error("发送消息失败:", error);
         messageHistory.push({
           role: 'user',
-          content: aiMessage.sender.name + "我有点废物(错误：" + error.message + ")，你们接着聊，不用管我。",
+          content: aiMessage.sender.name + "对不起，我还不够智能，服务又断开了(错误：" + error.message + ")。",
           name: aiMessage.sender.name
         });
         setMessages(prev => prev.map(msg => 
           msg.id === aiMessage.id 
-            ? { ...msg, content: "我有点废物(错误：" + error.message + ")，你们接着聊，不用管我。", isError: true }
+            ? { ...msg, content: "对不起，我还不够智能，服务又断开了(错误：" + error.message + ")。", isError: true }
             : msg
         ));
       }
