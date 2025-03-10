@@ -11,8 +11,8 @@ export const modelConfigs = [
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
   {
-    model: "hunyuan-standard",
-    apiKey: "HUNYUAN_API_KEY",
+    model: "hunyuan-turbos-latest",
+    apiKey: "HUNYUAN_API_KEY1",
     baseURL: "https://api.hunyuan.cloud.tencent.com/v1"
   },
   {
