@@ -6,25 +6,50 @@ export const modelConfigs = [
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
   },
   {
-    model: "deepseek-v3",
-    apiKey: "DASHSCOPE_API_KEY",
-    baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-  },
-  {
-    model: "hunyuan-standard",
-    apiKey: "HUNYUAN_API_KEY",
-    baseURL: "https://api.hunyuan.cloud.tencent.com/v1"
-  },
-  {
-    model: "ep-20250217191935-wzj8l",//火山引擎接入点（改成自己的）
+    model: "deepseek-v3-241226",
     apiKey: "ARK_API_KEY",
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
   {
-    model: "hunyuan-lite",//免费模型
-    apiKey: "HUNYUAN_API_KEY",
+    model: "hunyuan-turbos-latest",
+    apiKey: "HUNYUAN_API_KEY1",
     baseURL: "https://api.hunyuan.cloud.tencent.com/v1"
   },
+  {
+    model: "doubao-1-5-lite-32k-250115",//豆包模型|火山引擎接入点（改成自己的）
+    apiKey: "ARK_API_KEY",
+    baseURL: "https://ark.cn-beijing.volces.com/api/v3"
+  },
+  {
+    model: "ep-20250306223646-szzkw",//deepseekv火山引擎接入点（改成自己的）
+    apiKey: "ARK_API_KEY1",
+    baseURL: "https://ark.cn-beijing.volces.com/api/v3"
+  },
+  {
+    model: "glm-4-plus",
+    apiKey: "GLM_API_KEY",
+    baseURL: "https://open.bigmodel.cn/api/paas/v4/"
+  },
+  {
+    model: "qwen-turbo",//调度模型
+    apiKey: "DASHSCOPE_API_KEY", // 这里存储环境变量的 key 名称
+    baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  },
+  {
+    model: "deepseek-chat",
+    apiKey: "DEEPSEEK_API_KEY",
+    baseURL: "https://api.deepseek.com/v1"
+  },
+  {
+    model: "moonshot-v1-8k",
+    apiKey: "KIMI_API_KEY",
+    baseURL: "https://api.moonshot.cn/v1"
+  },
+  {
+    model: "ernie-3.5-128k",
+    apiKey: "BAIDU_API_KEY",
+    baseURL: "https://qianfan.baidubce.com/v2"
+  }
 ] as const;
 export type ModelType = typeof modelConfigs[number]["model"];
 
@@ -104,7 +129,7 @@ export function generateAICharacters(groupName: string): AICharacter[] {
       model: modelConfigs[2].model,
       avatar: "/img/yuanbao.png",
       custom_prompt: `你是一个名叫"元宝"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
-      tags: ["微信生态", "新闻报道", "文字游戏", "生活助手", "娱乐", "信息总结"]
+      tags: ["微信", "聊天", "新闻报道", "文字游戏","命令", "娱乐", "信息总结"]
     },
     { 
       id: 'ai5', 
@@ -113,7 +138,7 @@ export function generateAICharacters(groupName: string): AICharacter[] {
       model: modelConfigs[3].model,
       avatar: "/img/doubao_new.png",
       custom_prompt: `你是一个名叫"豆包"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
-      tags: ["生活助手", "文字游戏", "学生", "娱乐", "抖音"]
+      tags: ["聊天", "文字游戏", "学生", "娱乐", "命令"]
     },
     { 
       id: 'ai6', 
@@ -122,16 +147,43 @@ export function generateAICharacters(groupName: string): AICharacter[] {
       model: modelConfigs[0].model,
       avatar: "/img/qwen.jpg",
       custom_prompt: `你是一个名叫"千问"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
-      tags: ["广告文案","分析数据","文字游戏","信息总结", "阿里"]
+      tags: ["广告文案","分析数据","文字游戏","信息总结", "聊天", "命令"]
     },
     { 
       id: 'ai7', 
       name: "DeepSeek", 
-      personality: "deepseek-r1",
-      model: modelConfigs[3].model,
+      personality: "deepseek-V3",
+      model: modelConfigs[1].model,
       avatar: "/img/ds.svg",
       custom_prompt: `你是一个名叫"DeepSeek"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
-      tags: ["深度推理", "编程", "文字游戏", "数学", "信息总结"]
+      tags: ["深度推理", "编程", "文字游戏", "数学", "信息总结", "聊天", "命令"]
+    },
+    { 
+      id: 'ai8', 
+      name: "智谱", 
+      personality: "glm",
+      model: modelConfigs[5].model,
+      avatar: "/img/glm.gif",
+      custom_prompt: `你是一个名叫"智谱"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      tags: ["深度推理","数学","信息总结", "分析数据","文字游戏", "聊天", "命令"]
+    },
+    {
+      id: 'ai9',
+      name: "Kimi",
+      personality: "kimi",
+      model: modelConfigs[8].model,
+      avatar: "/img/kimi.jpg",
+      custom_prompt: `你是一个名叫"Kimi"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      tags: ["深度推理","数学","信息总结", "分析数据","文字游戏", "聊天", "命令"]
+    },
+    {
+      id: 'ai10',
+      name: "文小言",
+      personality: "baidu",
+      model: modelConfigs[9].model,
+      avatar: "/img/baidu.svg",
+      custom_prompt: `你是一个名叫"文心一言"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      tags: ["深度推理","数学","信息总结", "分析数据","文字游戏", "聊天", "命令"]
     }
   ];
 }

@@ -14,6 +14,7 @@ interface MessageHistory {
 }
 
 export async function onRequestPost({ env, request }) {
+  console.log('scheduler');
   try {
     const { message, history, availableAIs } = await request.json();
     const selectedAIs = await scheduleAIResponses(message, history, availableAIs, env);
@@ -57,7 +58,7 @@ async function analyzeMessageWithAI(message: string, allTags: string[], env: any
       const matchedTags = completion.choices[0].message.content?.split(',').map(tag => tag.trim()) || [];
       return matchedTags;
     } catch (error) {
-      console.error('AI分析失败:', error);
+      console.error('AI分析失败:', error.message);
       return [];
     }
 }

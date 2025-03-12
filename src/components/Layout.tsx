@@ -1,23 +1,16 @@
-interface LayoutProps {
-  children: React.ReactNode
-}
+import React from 'react';
+import Header from './Header';
 
-function Layout({ children }: LayoutProps) {
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="app-container">
-      <header className="app-header">
-        {/* 这里可以放导航栏 */}
-      </header>
-      
-      <main className="app-main">
-        {children}
-      </main>
-      
-      <footer className="app-footer">
-        {/* 这里可以放页脚信息 */}
-      </footer>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-1">
+        <main className="flex-1 pt-14">
+          {children}
+        </main>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Layout 
+export default Layout; 
