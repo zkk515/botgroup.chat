@@ -1,4 +1,4 @@
-import { modelConfigs, shedulerAICharacter } from '../../src/config/aiCharacters';
+import { modelConfigs, generateAICharacters } from '../../src/config/aiCharacters';
 import OpenAI from 'openai';
 
 interface AICharacter {
@@ -32,7 +32,7 @@ export async function onRequestPost({ env, request }) {
 }
 
 async function analyzeMessageWithAI(message: string, allTags: string[], env: any, history: MessageHistory[] = []): Promise<string[]> {
-    const shedulerAI = shedulerAICharacter(message, allTags);
+    const shedulerAI = generateAICharacters(message, allTags.join(','))[0];
     const modelConfig = modelConfigs.find(config => config.model === shedulerAI.model);
     const apiKey = env[modelConfig.apiKey];
     if (!apiKey) {

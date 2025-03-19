@@ -4,7 +4,7 @@ import { MessageSquareIcon, PlusCircleIcon, MenuIcon, PanelLeftCloseIcon } from 
 import { cn } from "@/lib/utils";
 import GitHubButton from 'react-github-btn';
 import '@fontsource/audiowide';
-import { groups } from "@/config/groups";
+//import { groups } from "@/config/groups";
 import { AdSection } from './AdSection';
 import { 
   Tooltip,
@@ -28,9 +28,10 @@ interface SidebarProps {
   toggleSidebar: () => void;
   selectedGroupIndex?: number;
   onSelectGroup?: (index: number) => void;
+  groups: Group[];
 }
 
-const Sidebar = ({ isOpen, toggleSidebar, selectedGroupIndex = 0, onSelectGroup }: SidebarProps) => {
+const Sidebar = ({ isOpen, toggleSidebar, selectedGroupIndex = 0, onSelectGroup, groups }: SidebarProps) => {
   
   return (
     <>

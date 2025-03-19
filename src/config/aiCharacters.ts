@@ -63,24 +63,20 @@ export interface AICharacter {
   tags?: string[]; // 可选的标签
 }
 
-// 调度器配置信息
-export function shedulerAICharacter(message: string, allTags: string[]): AICharacter {
-  return {
+// 添加一个函数来生成带有群名的角色配置
+export function generateAICharacters(groupName: string, allTags: string): AICharacter[] {
+  return [
+    {
       id: 'ai0',
       name: "调度器",
       personality: "sheduler",
       model: modelConfigs[0].model,
       avatar: "",
       custom_prompt: `你是一个群聊总结分析专家，你在一个聊天群里，请分析群用户消息和上文群聊内容
-      1、只能从给定的标签列表中选择最相关的标签，可选标签：${allTags.join(', ')}。
+      1、只能从给定的标签列表中选择最相关的标签，可选标签：“${allTags}”。
       2、请只返回标签列表，用逗号分隔，不要有其他解释, 不要有任何前缀。
-      3、回复格式示例：文字游戏, 生活助手, 娱乐`
-    }
-}
-
-// 添加一个函数来生成带有群名的角色配置
-export function generateAICharacters(groupName: string): AICharacter[] {
-  return [
+      3、回复格式示例：文字游戏, 新闻报道, 娱乐`
+    },
     { 
       id: 'ai1', 
       name: "暖心姐", 

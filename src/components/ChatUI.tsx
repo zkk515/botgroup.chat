@@ -12,8 +12,6 @@ import {
   TooltipTrigger 
 } from "@/components/ui/tooltip";
 
-import {generateAICharacters} from "@/config/aiCharacters";
-import { groups } from "@/config/groups";
 import type { AICharacter } from "@/config/aiCharacters";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
@@ -139,54 +137,115 @@ const KaTeXStyle = () => (
   `}} />
 );
 
-const ChatUI = () => {
-  // 使用当前选中的群组在 groups 数组中的索引
-  const [selectedGroupIndex, setSelectedGroupIndex] = useState(0); // 默认选中第1个群组
-  const [group, setGroup] = useState(groups[selectedGroupIndex]);
-  const [isGroupDiscussionMode, setIsGroupDiscussionMode] = useState(group.isGroupDiscussionMode);
-  const groupAiCharacters = generateAICharacters(group.name)
-    .filter(character => group.members.includes(character.id))
-    .sort((a, b) => {
-      return group.members.indexOf(a.id) - group.members.indexOf(b.id);
-    });
-  const allNames = groupAiCharacters.map(character => character.name);
-  allNames.push('user');
-  const [users, setUsers] = useState([
-    { id: 1, name: "我" },
-    ...groupAiCharacters
-  ]);
-  const [showMembers, setShowMembers] = useState(false);
-  const [messages, setMessages] = useState([
+// Vite环境变量访问方式
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
-  ]);
+const ChatUI = () => {
+  //获取url参数
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id')? parseInt(urlParams.get('id')!) : 0;
+  // 1. 所有的 useState 声明
+  const [groups, setGroups] = useState([]);
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(id);
+  const [group, setGroup] = useState(null);
+  const [groupAiCharacters, setGroupAiCharacters] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [isGroupDiscussionMode, setIsGroupDiscussionMode] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [allNames, setAllNames] = useState([]);
+  const [showMembers, setShowMembers] = useState(false);
+  const [messages, setMessages] = useState([]);
   const [showAd, setShowAd] = useState(true);
   const [inputMessage, setInputMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [pendingContent, setPendingContent] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [mutedUsers, setMutedUsers] = useState<string[]>([]);
+  const [showPoster, setShowPoster] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // 2. 所有的 useRef 声明
   const currentMessageRef = useRef<number | null>(null);
   const typewriterRef = useRef<NodeJS.Timeout | null>(null);
-  const accumulatedContentRef = useRef(""); // 用于跟踪完整内容
+  const accumulatedContentRef = useRef(""); 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatAreaRef = useRef<HTMLDivElement>(null);
+  const abortController = useRef(new AbortController());
 
-  // 添加禁言状态
-  const [mutedUsers, setMutedUsers] = useState<string[]>([]);
+  // 添加一个 ref 来跟踪是否已经初始化
+  const isInitialized = useRef(false);
 
-  const abortController = new AbortController();
+  // 3. 所有的 useEffect
+  useEffect(() => {
+    // 如果已经初始化过，则直接返回
+    if (isInitialized.current) return;
 
-  const handleRemoveUser = (userId: number) => {
-    setUsers(users.filter(user => user.id !== userId));
-  };
+    const initData = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/init`);
+        if (!response.ok) {
+          throw new Error('初始化数据失败');
+        }
+        const {data} = await response.json();
+        console.log("初始化数据", data);
+        const group = data.groups[selectedGroupIndex];
+        const characters = data.characters;
+        setGroups(data.groups);
+        setGroup(group);
+        setIsInitializing(false);
+        setIsGroupDiscussionMode(group.isGroupDiscussionMode);
+        const groupAiCharacters = characters
+          .filter(character => group.members.includes(character.id))
+          .filter(character => character.personality !== "sheduler")
+          .sort((a, b) => {
+            return group.members.indexOf(a.id) - group.members.indexOf(b.id);
+          });
+        setGroupAiCharacters(groupAiCharacters);
+        const allNames = groupAiCharacters.map(character => character.name);
+        allNames.push('user');
+        setAllNames(allNames);
+        setUsers([
+          { id: 1, name: "我" },
+          ...groupAiCharacters
+        ]);
+      } catch (error) {
+        console.error("初始化数据失败:", error);
+        setIsInitializing(false);
+      }
+    };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+    initData();
+    // 标记为已初始化
+    isInitialized.current = true;
+  }, []); // 依赖数组保持为空
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // 添加禁言/取消禁言处理函数
+  useEffect(() => {
+    if (messages.length > 0) {
+      setShowAd(false);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    return () => {
+      if (typewriterRef.current) {
+        clearInterval(typewriterRef.current);
+      }
+    };
+  }, []);
+
+  // 4. 工具函数
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleRemoveUser = (userId: number) => {
+    setUsers(users.filter(user => user.id !== userId));
+  };
+
   const handleToggleMute = (userId: string) => {
     setMutedUsers(prev => 
       prev.includes(userId) 
@@ -195,11 +254,22 @@ const ChatUI = () => {
     );
   };
 
-  useEffect(() => {
-    if (messages.length > 0) {
-      setShowAd(false);
-    }
-  }, [messages]);
+  const handleShareChat = () => {
+    setShowPoster(true);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  // 5. 加载检查
+  if (isInitializing || !group) {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-orange-50 via-orange-50/70 to-orange-100 flex items-center justify-center">
+        <div className="w-8 h-8 animate-spin rounded-full border-4 border-orange-500 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   const handleSendMessage = async () => {
     //判断是否Loding
@@ -227,7 +297,7 @@ const ChatUI = () => {
     }));
     let selectedGroupAiCharacters = groupAiCharacters;
     if (!isGroupDiscussionMode) {
-      const shedulerResponse = await fetch('/api/scheduler', {
+      const shedulerResponse = await fetch(`${API_BASE_URL}/api/scheduler`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -255,7 +325,7 @@ const ChatUI = () => {
       setMessages(prev => [...prev, aiMessage]);
 
       try {
-        const response = await fetch('/api/chat', {
+        const response = await fetch(`${API_BASE_URL}/api/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -267,7 +337,7 @@ const ChatUI = () => {
             history: messageHistory,
             index: i,
             aiName: selectedGroupAiCharacters[i].name,
-            custom_prompt: selectedGroupAiCharacters[i].custom_prompt + "\n" + group.description
+            custom_prompt: selectedGroupAiCharacters[i].custom_prompt.replace('#groupName#', group.name) + "\n" + group.description
           }),
         });
 
@@ -388,37 +458,16 @@ const ChatUI = () => {
   };
 
   const handleCancel = () => {
-    abortController.abort();
-  };
-
-  // 清理打字机效果
-  useEffect(() => {
-    return () => {
-      if (typewriterRef.current) {
-        clearInterval(typewriterRef.current);
-      }
-    };
-  }, []);
-
-  // 添加对聊天区域的引用
-  const chatAreaRef = useRef<HTMLDivElement>(null);
-
-  // 更新分享函数
-  const [showPoster, setShowPoster] = useState(false);
-
-  const handleShareChat = () => {
-    setShowPoster(true);
-  };
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  
-  // 切换侧边栏状态的函数
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    abortController.current.abort();
   };
 
   // 处理群组选择
   const handleSelectGroup = (index: number) => {
+    //进行跳转到?id=index
+    window.location.href = `?id=${index}`;
+    return;
+    /*
+    //跳转后，关闭当前页面
     setSelectedGroupIndex(index);
     const newGroup = groups[index];
     setGroup(newGroup);
@@ -444,6 +493,7 @@ const ChatUI = () => {
     if (window.innerWidth < 768) {
       setSidebarOpen(false);
     }
+    */
   };
 
   return (
@@ -457,6 +507,7 @@ const ChatUI = () => {
             toggleSidebar={toggleSidebar} 
             selectedGroupIndex={selectedGroupIndex}
             onSelectGroup={handleSelectGroup}
+            groups={groups}
           />
           
           {/* 聊天主界面 */}
