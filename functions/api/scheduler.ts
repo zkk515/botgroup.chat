@@ -134,6 +134,6 @@ async function scheduleAIResponses(
   }
 
   // 6. 限制最大回复数量
-  const MAX_RESPONDERS = 9;
+  const MAX_RESPONDERS = 3;
   return sortedAIs.slice(0, MAX_RESPONDERS);
 } 
