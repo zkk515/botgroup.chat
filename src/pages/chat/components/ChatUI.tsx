@@ -17,8 +17,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
-import { SharePoster } from '@/components/SharePoster';
-import { MembersManagement } from '@/components/MembersManagement';
+import { SharePoster } from '@/pages/chat/components/SharePoster';
+import { MembersManagement } from '@/pages/chat/components/MembersManagement';
 import Sidebar from './Sidebar';
 import { AdBanner, AdBannerMobile } from './AdSection';
 // 使用本地头像数据，避免外部依赖

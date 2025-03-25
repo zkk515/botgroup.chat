@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 interface PhoneLoginProps {
   onLogin: (phone: string, code: string) => void;
 }
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const PhoneLogin: React.FC<PhoneLoginProps> = ({ onLogin }) => {
   const [phone, setPhone] = useState('');
@@ -21,7 +22,7 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onLogin }) => {
 
     //setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/sendcode`, {
+      const response = await fetch(`${API_BASE_URL}/api/sendcode`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onLogin }) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

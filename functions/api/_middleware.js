@@ -1,8 +1,4 @@
-interface Env {
-    JWT_SECRET: string;
-}
-
-export async function verifyToken(token: string, env: Env) {
+async function verifyToken(token, env) {
     try {
         const [headerB64, payloadB64, signature] = token.split('.');
         
@@ -49,12 +45,32 @@ export async function verifyToken(token: string, env: Env) {
 }
 
 // 中间件函数
-export const authMiddleware = async (request: Request, env: Env) => {
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        throw new Error('No token provided');
+export async function onRequest(context) {
+    try {
+        const request = context.request;
+        const env = context.env;
+        //跳过登录页面
+        if (request.url.includes('/login') || request.url.includes('/sendcode') || request.url.includes('/login')) {
+            return await context.next();
+        }
+        const authHeader = request.headers.get('Authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            throw new Error('No token provided');
+        }
+        
+        const token = authHeader.split(' ')[1];
+        const payload = await verifyToken(token, env);
+        
+        // 将用户信息添加到上下文中
+        context.user = payload;
+        
+        return await context.next();
+    } catch (error) {
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 401,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
-    
-    const token = authHeader.split(' ')[1];
-    return await verifyToken(token, env);
-}; 
+}
