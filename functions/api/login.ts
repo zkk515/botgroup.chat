@@ -1,6 +1,7 @@
 interface Env {
     bgkv: KVNamespace;
     JWT_SECRET: string;
+    DB: D1Database;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -61,19 +62,56 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
             );
         }
 
-        // 验证成功，生成 JWT token，传入 env
+        // 验证成功后，处理用户数据
+        const db = env.DB; // 假设你的 D1 数据库实例名为 DB
+
+        // 查询用户是否存在
+        const existingUser = await db.prepare(
+            "SELECT id, phone, nickname FROM users WHERE phone = ?"
+        ).bind(phone).first();
+
+        let userId;
+        if (!existingUser) {
+            // 用户不存在，创建新用户
+            const result = await db.prepare(`
+                INSERT INTO users (phone, nickname, status, created_at, updated_at, last_login_at)
+                VALUES (?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            `).bind(phone, `用户${phone.substring(7)}`).run();
+            
+            userId = result.lastRowId;
+        } else {
+            // 用户存在，更新登录时间
+            await db.prepare(`
+                UPDATE users 
+                SET last_login_at = CURRENT_TIMESTAMP,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE phone = ?
+            `).bind(phone).run();
+            
+            userId = existingUser.id;
+        }
+
+        // 获取完整的用户信息
+        const userInfo = await db.prepare(`
+            SELECT id, phone, nickname, avatar_url, status
+            FROM users 
+            WHERE phone = ?
+        `).bind(phone).first();
+
+        // 生成 token
         const token = await generateToken(phone, env);
         
         // 删除验证码
         await env.bgkv.delete(`sms:${phone}`);
 
+        // 返回用户信息和token
         return new Response(
             JSON.stringify({ 
                 success: true, 
                 message: '登录成功',
                 data: {
                     token,
-                    phone
+                    user: userInfo
                 }
             }), 
             {

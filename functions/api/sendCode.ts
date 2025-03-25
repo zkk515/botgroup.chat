@@ -1,71 +1,85 @@
+import { sendSMS } from '../utils/sms';
+
 interface Env {
-    bgkv: KVNamespace;
+  ALIYUN_ACCESS_KEY_ID: string;
+  ALIYUN_ACCESS_KEY_SECRET: string;
+  ALIYUN_SMS_SIGN_NAME: string;
+  ALIYUN_SMS_TEMPLATE_CODE: string;
+  bgkv: KVNamespace;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
+  const { request, env } = context;
+  
   try {
-    const { request, env } = context;
+    const { phone } = await request.json();
     
-    // 获取请求体
-    const body = await request.json();
-    const { phone } = body;
-
-    // 验证手机号格式
     if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
       return new Response(
         JSON.stringify({ 
-          success: false, 
-          message: '无效的手机号码' 
-        }), 
+          success: false,
+          message: '请输入正确的手机号'
+        }),
         {
           status: 400,
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
 
-    // 生成6位随机验证码
-    let verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    // 使用 CF_PAGES_ENVIRONMENT 判断环境
-    // 值为 'production' 或 'preview'
-    if (env.CF_PAGES_ENVIRONMENT !== 'production') {
-        verificationCode = '123456';
+    // 开发环境使用固定验证码
+    const verificationCode = env.CF_PAGES_ENVIRONMENT === 'preview' 
+      ? '123456' 
+      : Math.random().toString().slice(-6);
+
+    if (env.CF_PAGES_ENVIRONMENT !== 'preview') {
+      try {
+        await sendSMS(phone, verificationCode, {
+          accessKeyId: env.ALIYUN_ACCESS_KEY_ID,
+          accessKeySecret: env.ALIYUN_ACCESS_KEY_SECRET,
+          signName: env.ALIYUN_SMS_SIGN_NAME,
+          templateCode: env.ALIYUN_SMS_TEMPLATE_CODE
+        });
+      } catch (error) {
+        console.error('SMS Error:', error);
+        return new Response(
+          JSON.stringify({ 
+            success: false,
+            message: error instanceof Error ? error.message : '发送验证码失败，请重试'
+          }),
+          {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
     }
-    // 将验证码存储到 KV 中，设置5分钟过期
+
+    // 存储验证码到 KV，设置 5 分钟过期
     await env.bgkv.put(`sms:${phone}`, verificationCode, {
-      expirationTtl: 300 // 5分钟过期
+      expirationTtl: 5 * 60 // 5分钟
     });
-    console.log(env.CF_PAGES_ENVIRONMENT, await env.bgkv.get(`sms:${phone}`));
 
     return new Response(
       JSON.stringify({ 
-        success: true, 
-        message: '验证码发送成功',
-        // 注意：实际生产环境不应该返回验证码
-        code: verificationCode  // 仅用于测试
-      }), 
+        success: true,
+        message: '验证码发送成功'
+      }),
       {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       }
     );
 
   } catch (error) {
-    console.error(error);
+    console.error('Request Error:', error);
     return new Response(
       JSON.stringify({ 
-        success: false, 
-        message: '服务器错误' 
-      }), 
+        success: false,
+        message: '请求格式错误'
+      }),
       {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }

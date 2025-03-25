@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { request } from '@/utils/request';
 interface PhoneLoginProps {
   onLogin: (phone: string, code: string) => void;
 }
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
-const PhoneLogin: React.FC<PhoneLoginProps> = ({ onLogin }) => {
+const PhoneLogin: React.FC<PhoneLoginProps> = ({ handleLoginSuccess }) => {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [countdown, setCountdown] = useState(0);
@@ -22,7 +21,7 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onLogin }) => {
 
     //setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/sendcode`, {
+      const response = await fetch(`/api/sendcode`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +64,7 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onLogin }) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/login`, {
+      const response = await request(`/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,9 +79,8 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onLogin }) => {
         throw new Error(data.message || '登录失败');
       }
 
-      // 保存 token 到 localStorage
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('phone', data.data.phone);
+      //执行登录成功回调
+      handleLoginSuccess(data.data.token);
       
     } catch (error) {
       console.error('登录失败:', error);

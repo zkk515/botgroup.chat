@@ -47,6 +47,14 @@ async function verifyToken(token, env) {
 // 中间件函数
 export async function onRequest(context) {
     try {
+        //获取环境变量中的AUTH_ACCESS
+        const authAccess = context.env.AUTH_ACCESS;
+        console.log('authAccess', authAccess);
+        //如果AUTH_ACCESS为0则跳过权限校验
+        if (!authAccess || authAccess === '0') {
+            console.log('跳过权限校验');
+            return await context.next();
+        }
         const request = context.request;
         const env = context.env;
         //跳过登录页面
@@ -66,6 +74,7 @@ export async function onRequest(context) {
         
         return await context.next();
     } catch (error) {
+        console.error(error.message, context.request.url);
         return new Response(JSON.stringify({ error: error.message }), {
             status: 401,
             headers: {

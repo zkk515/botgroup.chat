@@ -11,7 +11,7 @@ export default function Login() {
 
   return (
     <div className="login-container">
-      <PhoneLogin onSuccess={handleLoginSuccess} />
+      <PhoneLogin handleLoginSuccess={handleLoginSuccess} />
     </div>
   );
 } 

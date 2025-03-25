@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
+import { request } from '@/utils/request';
 import { 
   Tooltip, 
   TooltipContent, 
@@ -137,8 +137,6 @@ const KaTeXStyle = () => (
   `}} />
 );
 
-// Vite环境变量访问方式
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const ChatUI = () => {
   //获取url参数
@@ -182,7 +180,7 @@ const ChatUI = () => {
 
     const initData = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/init`);
+        const response = await request(`/api/init`);
         if (!response.ok) {
           throw new Error('初始化数据失败');
         }
@@ -297,7 +295,7 @@ const ChatUI = () => {
     }));
     let selectedGroupAiCharacters = groupAiCharacters;
     if (!isGroupDiscussionMode) {
-      const shedulerResponse = await fetch(`${API_BASE_URL}/api/scheduler`, {
+      const shedulerResponse = await request(`/api/scheduler`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -325,7 +323,7 @@ const ChatUI = () => {
       setMessages(prev => [...prev, aiMessage]);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/chat`, {
+        const response = await request(`/api/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

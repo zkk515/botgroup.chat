@@ -1,3 +1,4 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 export async function request(url: string, options: RequestInit = {}) {
     const token = localStorage.getItem('token');
     
@@ -10,8 +11,9 @@ export async function request(url: string, options: RequestInit = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
+
     try {
-        const response = await fetch(url, {
+        const response = await fetch(`${API_BASE_URL}${url}`, {
             ...options,
             headers,
         });
@@ -27,7 +29,7 @@ export async function request(url: string, options: RequestInit = {}) {
             throw new Error('Request failed');
         }
 
-        return response.json();
+        return response;
     } catch (error) {
         // 如果是网络错误或其他错误，也可以处理
         console.error('Request error:', error);
