@@ -1,7 +1,7 @@
 interface Env {
     bgkv: KVNamespace;
     JWT_SECRET: string;
-    DB: D1Database;
+    bgdb: D1Database;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -46,7 +46,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
         // 从 KV 中获取存储的验证码
         const storedCode = await env.bgkv.get(`sms:${phone}`);
-        
         if (!storedCode || storedCode !== code) {
             return new Response(
                 JSON.stringify({ 
@@ -63,13 +62,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         }
 
         // 验证成功后，处理用户数据
-        const db = env.DB; // 假设你的 D1 数据库实例名为 DB
-
+        const db = env.bgdb; // 假设你的 D1 数据库实例名为 DB
         // 查询用户是否存在
         const existingUser = await db.prepare(
             "SELECT id, phone, nickname FROM users WHERE phone = ?"
         ).bind(phone).first();
 
+        console.log('existingUser', existingUser);
         let userId;
         if (!existingUser) {
             // 用户不存在，创建新用户

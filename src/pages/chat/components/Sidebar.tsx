@@ -6,6 +6,7 @@ import GitHubButton from 'react-github-btn';
 import '@fontsource/audiowide';
 //import { groups } from "@/config/groups";
 import { AdSection } from './AdSection';
+import { UserSection } from './UserSection';
 import { 
   Tooltip,
   TooltipContent,
@@ -122,6 +123,9 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedGroupIndex = 0, onSelectGroup,
           
           {/* 广告位 */}
           <AdSection isOpen={isOpen} />
+
+          {/* 用户信息模块 */}
+          <UserSection isOpen={isOpen} />
 
           {/* GitHub Star Button - 只在侧边栏打开时显示，放在底部 */}
           <div className="px-3 py-2 mt-auto">

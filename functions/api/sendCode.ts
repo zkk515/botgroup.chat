@@ -28,11 +28,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 
     // 开发环境使用固定验证码
-    const verificationCode = env.CF_PAGES_ENVIRONMENT === 'preview' 
+    const verificationCode = env.CF_PAGES_ENVIRONMENT !== 'production' 
       ? '123456' 
       : Math.random().toString().slice(-6);
-
-    if (env.CF_PAGES_ENVIRONMENT !== 'preview') {
+    if (env.CF_PAGES_ENVIRONMENT === 'production') {
       try {
         await sendSMS(phone, verificationCode, {
           accessKeyId: env.ALIYUN_ACCESS_KEY_ID,

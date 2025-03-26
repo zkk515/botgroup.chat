@@ -58,7 +58,7 @@ export async function onRequest(context) {
         const request = context.request;
         const env = context.env;
         //跳过登录页面
-        if (request.url.includes('/login') || request.url.includes('/sendcode') || request.url.includes('/login')) {
+        if (request.url.includes('/login') || request.url.includes('/sendcode') || request.url.includes('/login') || request.url.includes('/test-db')) {
             return await context.next();
         }
         const authHeader = request.headers.get('Authorization');
