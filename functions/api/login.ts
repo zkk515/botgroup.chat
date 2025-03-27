@@ -98,7 +98,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         `).bind(phone).first();
 
         // 生成 token
-        const token = await generateToken(phone, env);
+        const token = await generateToken(userId, env);
         
         // 删除验证码
         await env.bgkv.delete(`sms:${phone}`);
@@ -139,14 +139,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 };
 
 // 修改为 async 函数
-async function generateToken(phone: string, env: Env): Promise<string> {
+async function generateToken(userId: string, env: Env): Promise<string> {
     const header = {
         alg: 'HS256',
         typ: 'JWT'
     };
     
     const payload = {
-        phone,
+        userId,
         exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // 7天过期
         iat: Math.floor(Date.now() / 1000)
     };

@@ -47,32 +47,27 @@ async function verifyToken(token, env) {
 // 中间件函数
 export async function onRequest(context) {
     try {
-        //获取环境变量中的AUTH_ACCESS
         const authAccess = context.env.AUTH_ACCESS;
         console.log('authAccess', authAccess);
-        //如果AUTH_ACCESS为0则跳过权限校验
-        if (!authAccess || authAccess === '0') {
+        
+        if (!authAccess || authAccess === '0' || context.request.url.includes('/login') || context.request.url.includes('/sendcode') || context.request.url.includes('/test-db')) {
             console.log('跳过权限校验');
-            return await context.next();
+            context.data = { user: null };
+            return context.next();
         }
-        const request = context.request;
-        const env = context.env;
-        //跳过登录页面
-        if (request.url.includes('/login') || request.url.includes('/sendcode') || request.url.includes('/login') || request.url.includes('/test-db')) {
-            return await context.next();
-        }
-        const authHeader = request.headers.get('Authorization');
+
+        const authHeader = context.request.headers.get('Authorization');
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             throw new Error('No token provided');
         }
         
         const token = authHeader.split(' ')[1];
-        const payload = await verifyToken(token, env);
+        const payload = await verifyToken(token, context.env);
         
-        // 将用户信息添加到上下文中
-        context.user = payload;
-        
-        return await context.next();
+        // 直接在原有的 request 对象上添加 context
+        context.data = { user: payload };
+        console.log('context.request.user', context.data);
+        return context.next();
     } catch (error) {
         console.error(error.message, context.request.url);
         return new Response(JSON.stringify({ error: error.message }), {

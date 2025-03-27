@@ -145,7 +145,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedGroupIndex = 0, onSelectGroup,
             </div>
             
             {isOpen && (
-              <div className="flex items-center justify-left">
+              <div className="flex items-center justify-left h-8">
                 <GitHubButton 
                   href="https://github.com/maojindao55/botgroup.chat"
                   data-color-scheme="no-preference: light; light: light; dark: light;"
