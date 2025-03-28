@@ -97,6 +97,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
             WHERE phone = ?
         `).bind(phone).first();
 
+        userId = userInfo.id
+
         // 生成 token
         const token = await generateToken(userId, env);
         
