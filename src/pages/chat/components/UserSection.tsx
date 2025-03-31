@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from "@/lib/utils";
 import { Edit2Icon, LogOutIcon, CheckIcon, XIcon } from 'lucide-react';
 import { request } from '@/utils/request';
+import { useUserStore } from '@/store/userStore';
+
 
 interface UserSectionProps {
   isOpen: boolean;
@@ -15,30 +17,12 @@ interface UserInfo {
 
 export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
   const [isHovering, setIsHovering] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newNickname, setNewNickname] = useState('');
-
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      if (!isOpen) return;
-      
-      try {
-        setIsLoading(true);
-        const response = await request('/api/user/info');
-        const { data } = await response.json();
-        console.log('data', data);
-        setUserInfo(data);
-      } catch (error) {
-        console.error('获取用户信息失败:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserInfo();
-  }, [isOpen]);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const userStore = useUserStore();
 
   // 添加更新昵称的函数
   const updateNickname = async () => {
@@ -51,12 +35,54 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
         body: JSON.stringify({ nickname: newNickname.trim() })
       });
       const { data } = await response.json();
-      setUserInfo(data);
+      console.log('更新用户信息', data);
+      //更新用户信息
+      userStore.setUserInfo(data);
+      
       setIsEditing(false);
     } catch (error) {
       console.error('更新昵称失败:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // 添加上传头像的处理函数
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingAvatar(true);
+      
+      // 1. 首先从后端获取上传 URL
+      const response = await request('/api/user/upload', {
+        method: 'POST'
+      });
+      const { uploadURL, id } = await response.json();
+      
+      // 2. 上传图片到 Cloudflare Images
+      const formData = new FormData();
+      formData.append('file', file); // 使用 'file' 作为字段名
+
+      await fetch(uploadURL, {
+        method: 'POST',
+        body: formData
+      });
+
+      // 3. 更新用户头像信息
+      const updateResponse = await request('/api/user/update', {
+        method: 'POST',
+        body: JSON.stringify({ avatar_url: id })
+      });
+      
+      const { data } = await updateResponse.json();
+      userStore.setUserInfo(data);
+      
+    } catch (error) {
+      console.error('上传头像失败:', error);
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -73,13 +99,41 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
     >
       {/* 头像区域 */}
       <div className="relative group cursor-pointer">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-rose-400 flex items-center justify-center shadow-sm">
-          <span className="text-base font-medium text-white">
-            {isLoading ? '...' : userInfo?.nickname?.[0] || '我'}
-          </span>
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="image/*"
+          onChange={handleAvatarUpload}
+        />
+        <div 
+          className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-rose-400 flex items-center justify-center shadow-sm overflow-hidden"
+          onClick={() => !uploadingAvatar && fileInputRef.current?.click()}
+        >
+          {uploadingAvatar ? (
+            <div className="flex items-center justify-center w-full h-full bg-black/20">
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : userStore.userInfo?.avatar_url ? (
+            <img 
+              src={`${userStore.userInfo.avatar_url}`}
+              alt="avatar"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-base font-medium text-white">
+              {userStore.userInfo?.nickname?.[0] || '我'}
+            </span>
+          )}
         </div>
         {/* 头像hover效果 */}
-        <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+        <div 
+          className={cn(
+            "absolute inset-0 rounded-full bg-black/40 flex items-center justify-center transition-opacity",
+            uploadingAvatar ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'
+          )}
+          onClick={() => !uploadingAvatar && fileInputRef.current?.click()}
+        >
           <Edit2Icon className="w-4 h-4 text-white" />
         </div>
       </div>
@@ -94,7 +148,7 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
                 value={newNickname}
                 onChange={(e) => setNewNickname(e.target.value)}
                 className="text-sm px-2  border rounded-md w-full"
-                placeholder={userInfo?.nickname || '输入新昵称'}
+                placeholder={userStore.userInfo?.nickname || '输入新昵称'}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') updateNickname();
                   if (e.key === 'Escape') setIsEditing(false);
@@ -121,7 +175,7 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
           ) : (
             <>
               <span className="text-sm font-semibold group-hover:text-primary transition-colors">
-                {isLoading ? '加载中...' : userInfo?.nickname || '游客用户'}
+                {isLoading ? '加载中...' : userStore.userInfo?.nickname || '游客用户'}
               </span>
               <Edit2Icon 
                 className={cn(
@@ -130,7 +184,7 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
                 )}
                 onClick={() => {
                   setIsEditing(true);
-                  setNewNickname(userInfo?.nickname || '');
+                  setNewNickname(userStore.userInfo?.nickname || '');
                 }}
               />
             </>

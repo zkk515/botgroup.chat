@@ -4,7 +4,6 @@ import { MessageSquareIcon, PlusCircleIcon, MenuIcon, PanelLeftCloseIcon } from 
 import { cn } from "@/lib/utils";
 import GitHubButton from 'react-github-btn';
 import '@fontsource/audiowide';
-//import { groups } from "@/config/groups";
 import { AdSection } from './AdSection';
 import { UserSection } from './UserSection';
 import { 

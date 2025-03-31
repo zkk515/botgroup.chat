@@ -8,32 +8,48 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         
         // 解析请求体
         const body = await request.json();
-        const { nickname } = body;
+        const { nickname, avatar_url } = body;
 
-        // 验证昵称
-        if (!nickname || typeof nickname !== 'string' || nickname.length > 32) {
-            return new Response(
-                JSON.stringify({ 
-                    success: false, 
-                    message: '昵称格式不正确' 
-                }), 
-                {
-                    status: 400,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+        // 构建 SQL 更新语句和参数
+        let sql = 'UPDATE users SET updated_at = DATETIME(\'now\')';
+        const params = [];
+
+        // 如果有昵称更新
+        if (nickname !== undefined) {
+            if (typeof nickname !== 'string' || nickname.length > 32) {
+                return new Response(
+                    JSON.stringify({ 
+                        success: false, 
+                        message: '昵称格式不正确' 
+                    }), 
+                    { status: 400, headers: { 'Content-Type': 'application/json' } }
+                );
+            }
+            sql += ', nickname = ?';
+            params.push(nickname);
         }
 
-        // 更新数据库中的昵称
-        const db = env.bgdb;
-        const result = await db.prepare(`
-            UPDATE users 
-            SET nickname = ?, 
-                updated_at = DATETIME('now')
-            WHERE id = ?
-        `).bind(nickname, data.user.userId).run();
+        // 如果有头像更新
+        if (avatar_url !== undefined) {
+            if (typeof avatar_url !== 'string') {
+                return new Response(
+                    JSON.stringify({ 
+                        success: false, 
+                        message: '头像URL格式不正确' 
+                    }), 
+                    { status: 400, headers: { 'Content-Type': 'application/json' } }
+                );
+            }
+            sql += ', avatar_url = ?';
+            params.push(avatar_url);
+        }
+
+        // 添加 WHERE 条件
+        sql += ' WHERE id = ?';
+        params.push(data.user.userId);
+
+        // 执行更新
+        const result = await env.bgdb.prepare(sql).bind(...params).run();
 
         if (!result.success) {
             return new Response(
@@ -51,12 +67,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         }
 
         // 获取更新后的用户信息
-        const userInfo = await db.prepare(`
+        const userInfo = await env.bgdb.prepare(`
             SELECT id, phone, nickname, avatar_url, status
             FROM users 
             WHERE id = ?
         `).bind(data.user.userId).first();
-
+        //处理avatar_url
+        userInfo.avatar_url = `${env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${userInfo.avatar_url}/public`;
         return new Response(
             JSON.stringify({ 
                 success: true, 
