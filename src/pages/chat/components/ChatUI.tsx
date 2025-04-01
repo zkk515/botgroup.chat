@@ -118,15 +118,28 @@ const ChatUI = () => {
         setGroupAiCharacters(groupAiCharacters);
         const allNames = groupAiCharacters.map(character => character.name);
         allNames.push('user');
+        let avatar_url = null;
+        let nickname = '我';
         setAllNames(allNames);
-
-        const response1 = await request('/api/user/info');
-        const userInfo = await response1.json();
-        //设置store
-        userStore.setUserInfo(userInfo.data);
-
+        if (data.user && data.user != null) {
+          const response1 = await request('/api/user/info');
+          const userInfo = await response1.json();
+          //设置store
+          userStore.setUserInfo(userInfo.data);
+          avatar_url = userInfo.data.avatar_url;
+          nickname = userInfo.data.nickname;
+        } else {
+          // 设置空的用户信息
+          userStore.setUserInfo({
+            id: 0,
+            phone: '',
+            nickname: nickname,
+            avatar_url: null,
+            status: 0
+          });
+        }
         setUsers([
-          { id: 1, name: userInfo.data.nickname, avatar: userInfo.data.avatar_url? userInfo.data.avatar_url : null },
+          { id: 1, name: nickname, avatar: avatar_url },
           ...groupAiCharacters
         ]);
       } catch (error) {

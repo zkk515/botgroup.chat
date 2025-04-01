@@ -82,7 +82,7 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !userStore.userInfo || !userStore.userInfo.status) return null;
   
   return (
     <div 
