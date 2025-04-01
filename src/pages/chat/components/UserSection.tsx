@@ -3,17 +3,13 @@ import { cn } from "@/lib/utils";
 import { Edit2Icon, LogOutIcon, CheckIcon, XIcon } from 'lucide-react';
 import { request } from '@/utils/request';
 import { useUserStore } from '@/store/userStore';
+import { getAvatarData } from '@/utils/avatar';
 
 
 interface UserSectionProps {
   isOpen: boolean;
 }
 
-// 添加用户信息接口
-interface UserInfo {
-  nickname: string;
-  avatar_url?: string;
-}
 
 export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
   const [isHovering, setIsHovering] = useState(false);
@@ -107,7 +103,8 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
           onChange={handleAvatarUpload}
         />
         <div 
-          className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-rose-400 flex items-center justify-center shadow-sm overflow-hidden"
+          className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm overflow-hidden"
+          style={{ backgroundColor: getAvatarData(userStore.userInfo?.nickname || '我').backgroundColor }}
           onClick={() => !uploadingAvatar && fileInputRef.current?.click()}
         >
           {uploadingAvatar ? (
@@ -121,8 +118,10 @@ export const UserSection: React.FC<UserSectionProps> = ({ isOpen }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-base font-medium text-white">
-              {userStore.userInfo?.nickname?.[0] || '我'}
+            <span 
+              className="text-base font-medium text-white"
+            >
+              {getAvatarData(userStore.userInfo?.nickname || '我').text}
             </span>
           )}
         </div>

@@ -73,7 +73,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
             WHERE id = ?
         `).bind(data.user.userId).first();
         //处理avatar_url
-        userInfo.avatar_url = `${env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${userInfo.avatar_url}/public`;
+        if (userInfo.avatar_url) {
+            userInfo.avatar_url = `${env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${userInfo.avatar_url}/public`;
+        }
         return new Response(
             JSON.stringify({ 
                 success: true, 

@@ -22,94 +22,8 @@ import { MembersManagement } from '@/pages/chat/components/MembersManagement';
 import Sidebar from './Sidebar';
 import { AdBanner, AdBannerMobile } from './AdSection';
 import { useUserStore } from '@/store/userStore';
-// 使用本地头像数据，避免外部依赖
-const getAvatarData = (name: string) => {
-  const colors = ['#1abc9c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22'];
-  const index = (name.charCodeAt(0) + (name.charCodeAt(1) || 0 )) % colors.length;
-  return {
-    backgroundColor: colors[index],
-    text: name[0],
-  };
-};
+import { getAvatarData } from '@/utils/avatar';
 
-// 单个完整头像
-const SingleAvatar = ({ user }: { user: User | AICharacter }) => {
-  // 如果有头像就使用头像，否则使用默认的文字头像
-  if ('avatar' in user && user.avatar) {
-    return (
-      <div className="w-full h-full">
-        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-      </div>
-    );
-  }
-  const avatarData = getAvatarData(user.name);
-  return (
-    <div 
-      className="w-full h-full flex items-center justify-center text-xs text-white font-medium"
-      style={{ backgroundColor: avatarData.backgroundColor }}
-    >
-      {avatarData.text}
-    </div>
-  );
-};
-
-// 左右分半头像
-const HalfAvatar = ({ user, isFirst }: { user: User, isFirst: boolean }) => {
-  if ('avatar' in user && user.avatar) {
-    return (
-      <div 
-        className="w-1/2 h-full"
-        style={{ 
-          borderRight: isFirst ? '1px solid white' : 'none'
-        }}
-      >
-        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-      </div>
-    );
-  }
-  const avatarData = getAvatarData(user.name);
-  return (
-    <div 
-      className="w-1/2 h-full flex items-center justify-center text-xs text-white font-medium"
-      style={{ 
-        backgroundColor: avatarData.backgroundColor,
-        borderRight: isFirst ? '1px solid white' : 'none'
-      }}
-    >
-      {avatarData.text}
-    </div>
-  );
-};
-
-// 四分之一头像
-const QuarterAvatar = ({ user, index }: { user: User, index: number }) => {
-  if ('avatar' in user && user.avatar) {
-    return (
-      <div 
-        className="aspect-square"
-        style={{ 
-          borderRight: index % 2 === 0 ? '1px solid white' : 'none',
-          borderBottom: index < 2 ? '1px solid white' : 'none'
-        }}
-      >
-        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-      </div>
-    );
-  }
-  const avatarData = getAvatarData(user.name);
-  return (
-    <div 
-      className="aspect-square flex items-center justify-center text-[8px] text-white font-medium"
-      style={{ 
-        backgroundColor: avatarData.backgroundColor,
-        borderRight: index % 2 === 0 ? '1px solid white' : 'none',
-        borderBottom: index < 2 ? '1px solid white' : 'none'
-      }}
-    >
-      {avatarData.text}
-    </div>
-  );
-};
 
 // 修改 KaTeXStyle 组件
 const KaTeXStyle = () => (
@@ -212,7 +126,7 @@ const ChatUI = () => {
         userStore.setUserInfo(userInfo.data);
 
         setUsers([
-          { id: 1, name: userInfo.data.nickname, avatar: userInfo.data.avatar_url },
+          { id: 1, name: userInfo.data.nickname, avatar: userInfo.data.avatar_url? userInfo.data.avatar_url : null },
           ...groupAiCharacters
         ]);
       } catch (error) {
@@ -531,7 +445,7 @@ const ChatUI = () => {
                           <Tooltip>
                             <TooltipTrigger>
                               <Avatar className="w-7 h-7 border-2 border-white">
-                                {'avatar' in user && user.avatar ? (
+                                {'avatar' in user && user.avatar && user.avatar !== null ? (
                                   <AvatarImage src={user.avatar} />
                                 ) : (
                                   <AvatarFallback style={{ backgroundColor: avatarData.backgroundColor, color: 'white' }}>
