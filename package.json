@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@alicloud/credentials": "^2.4.2",
+    "@alicloud/dysmsapi20170525": "^3.1.1",
     "@fontsource/audiowide": "^5.1.1",
     "@radix-ui/react-avatar": "^1.1.3",
     "@radix-ui/react-dialog": "^1.1.6",
@@ -30,6 +32,7 @@
     "react-dom": "^18.2.0",
     "react-github-btn": "^1.4.0",
     "react-markdown": "^9.0.3",
+    "react-router-dom": "^7.4.0",
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
@@ -37,7 +40,8 @@
     "tailwind-merge": "^2.6.0",
     "tailwind-scrollbar-hide": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
-    "wrangler": "^3.112.0"
+    "wrangler": "^3.112.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@shadcn/ui": "^0.0.4",

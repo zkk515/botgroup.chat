@@ -1,13 +1,13 @@
 import {generateAICharacters } from '../../src/config/aiCharacters';
 import { groups } from '../../src/config/groups';
-export async function onRequestGet({ env, request }) {
-    console.log('init');
+export async function onRequestGet(context) {
     try {
       return Response.json({
         code: 200,
         data: {
           groups: groups,
           characters: generateAICharacters('#groupName#', '#allTags#'),
+          user: context.data.user || null
         }
       });
     } catch (error) {

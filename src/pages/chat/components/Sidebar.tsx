@@ -4,8 +4,8 @@ import { MessageSquareIcon, PlusCircleIcon, MenuIcon, PanelLeftCloseIcon } from 
 import { cn } from "@/lib/utils";
 import GitHubButton from 'react-github-btn';
 import '@fontsource/audiowide';
-//import { groups } from "@/config/groups";
 import { AdSection } from './AdSection';
+import { UserSection } from './UserSection';
 import { 
   Tooltip,
   TooltipContent,
@@ -123,6 +123,9 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedGroupIndex = 0, onSelectGroup,
           {/* 广告位 */}
           <AdSection isOpen={isOpen} />
 
+          {/* 用户信息模块 */}
+          <UserSection isOpen={isOpen} />
+
           {/* GitHub Star Button - 只在侧边栏打开时显示，放在底部 */}
           <div className="px-3 py-2 mt-auto">
             {/* 标题移至底部 */}
@@ -141,7 +144,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedGroupIndex = 0, onSelectGroup,
             </div>
             
             {isOpen && (
-              <div className="flex items-center justify-left">
+              <div className="flex items-center justify-left h-8">
                 <GitHubButton 
                   href="https://github.com/maojindao55/botgroup.chat"
                   data-color-scheme="no-preference: light; light: light; dark: light;"

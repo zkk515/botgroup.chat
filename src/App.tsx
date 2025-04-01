@@ -1,13 +1,11 @@
-import ChatUI from './components/ChatUI'
-import './App.css'
-import Layout from './components/Layout'
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes';
 
 function App() {
+  console.log("App rendering"); // 添加日志
   return (
-    <Layout>
-      <ChatUI />
-    </Layout>
-  )
+    <RouterProvider router={router} />
+  );
 }
 
-export default App
+export default App;
