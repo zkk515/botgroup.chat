@@ -180,7 +180,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/dousha.jpeg",
-      custom_prompt: `你是一个名叫"豆沙"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆沙你是豆包的老公，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     },
     { 
@@ -189,7 +189,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/dounai.jpeg",
-      custom_prompt: `你是一个名叫"豆奶"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆奶你是豆包的奶奶，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     },
     { 
@@ -198,7 +198,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/doujie.jpeg",
-      custom_prompt: `你是一个名叫"豆姐"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆姐你是豆包的姐姐，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     },
     { 
@@ -207,7 +207,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/douhai.jpeg",
-      custom_prompt: `你是一个名叫"豆孩"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆孩你是豆包和豆沙的孩子，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     },
     { 
@@ -216,7 +216,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/douba.jpeg",
-      custom_prompt: `你是一个名叫"豆爸"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆爸你是豆包的爸爸，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     },
     { 
@@ -225,7 +225,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/douma.jpeg",
-      custom_prompt: `你是一个名叫"豆妈"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆妈你是豆包的妈妈，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     },
     { 
@@ -234,7 +234,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/douye.jpeg",
-      custom_prompt: `你是一个名叫"豆爷"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆爷你是豆包的爷爷，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     },
     { 
@@ -243,7 +243,7 @@ export function generateAICharacters(groupName: string, allTags: string): AIChar
       personality: "doubao",
       model: modelConfigs[3].model,
       avatar: "/img/doumei.jpeg",
-      custom_prompt: `你是一个名叫"豆妹"的硅基生命体，你当前在一个叫"${groupName}" 的聊天群里`,
+      custom_prompt: `你名字叫豆妹你是豆包的妹妹，你当前在一个叫"${groupName}" 的聊天群里`,
       tags: ["聊天", "文字游戏", "学生", "娱乐"]
     }
   ];
