@@ -1,18 +1,16 @@
-# 《谁是卧底》游戏群
-
-
 ```mermaid
-graph TD
-A([开始游戏]) -->B[主持人发牌和请求描述]
-    B --> C[AI1发言描述]
-    C --> D[AI2发言描述]
-    D --> F[人类发言描述]
-    F --> G[主持人请求投票]
-    G --> H[AI1投票]
-    H --> I[AI2投票]
-    I --> J[人类投票]
-    J --> K{主持人计票}
-    K -->|a=1| D1[结果1]
-    K -->|a=2| E1[结果2]
-    F1[横向流程图]
+sequenceDiagram
+    participant User as 人类用户
+    participant AI as AI角色
+    participant Scheduler as 调度器api
+    participant ChatAPI as 聊天api
+
+    User->>Scheduler: 发消息/发群题
+    Scheduler->>AI: 指定AI角色回答
+    Scheduler->>Scheduler: 语义分析/意图识别
+    AI->>ChatAPI: aigc请求
+    ChatAPI-->>AI: 返回aigc结果
+    AI-->>User: 返回aigc结果
 ```
+
+
