@@ -16,7 +16,7 @@ export const modelConfigs = [
     baseURL: "https://api.hunyuan.cloud.tencent.com/v1"
   },
   {
-    model: "doubao-1-5-lite-32k-250115",//豆包模型|火山引擎接入点（改成自己的）
+    model: "ep-20250506172557-mk7fp",//豆包模型|火山引擎接入点（改成自己的）
     apiKey: "ARK_API_KEY",
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
