@@ -21,7 +21,7 @@ export const modelConfigs = [
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
   {
-    model: "ep-20250306223646-szzkw",//deepseekv火山引擎接入点（改成自己的）
+    model: "ep-20250506172557-mk7fp",//deepseekv火山引擎接入点（改成自己的）
     apiKey: "ARK_API_KEY1",
     baseURL: "https://ark.cn-beijing.volces.com/api/v3"
   },
