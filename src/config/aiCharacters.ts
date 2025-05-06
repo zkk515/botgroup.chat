@@ -6,6 +6,11 @@ export const modelConfigs = [
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
   },
   {
+    model: "deepseek-v3-250324",
+    apiKey: "ARK_API_KEY1",
+    baseURL: "https://ark.cn-beijing.volces.com/api/v3"
+  },
+  {
     model: "hunyuan-turbos-latest",
     apiKey: "HUNYUAN_API_KEY1",
     baseURL: "https://api.hunyuan.cloud.tencent.com/v1"
